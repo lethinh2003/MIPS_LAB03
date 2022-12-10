@@ -1,0 +1,52 @@
+.data
+	stringNhap1: .asciiz "Nhap so luong phan tu: "
+	stringNhap2: .asciiz "Nhap mang cac so nguyen: "
+	stringXuat: .asciiz "Mang vua nhap: "
+	stringKhoangCach: .asciiz " "
+	array:  .word  0:100   # int array[100] 
+
+.text
+	la $a0,stringNhap1
+	jal printf
+	# so luong phan tu
+	li $v0,5
+	syscall
+	addi $t0,$v0,0  #t0 = n
+	#load address base array
+	la $a1,array
+	li $t1,0
+	nhapMang:
+		subu $t2,$t1,$t0 # -5, -4, -3, -2, -1, 0 thi dung
+		bgez $t2,ketThucNhap #t2 >= 0 thi dung
+		li $v0,5
+		syscall
+		sw $v0,($a1)
+		addi $a1,$a1,4
+		addi $t1,$t1,1
+		j nhapMang
+	ketThucNhap:
+		la $a1,array
+		li $t1,0
+		la $a0,stringXuat
+		jal printf
+	xuatMang:
+		subu $t2,$t1,$t0
+		bgez $t2,exit
+		lw $a0,($a1)
+		jal printInteger
+		addi $a1,$a1,4
+		addi $t1,$t1,1
+		la $a0,stringKhoangCach
+		jal printf
+		j xuatMang
+	exit:
+		li $v0,10
+		syscall
+	printf:
+		li $v0,4
+		syscall
+		jr $ra
+	printInteger:
+		li $v0,1
+		syscall
+		jr $ra

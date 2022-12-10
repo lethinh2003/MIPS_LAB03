@@ -1,0 +1,80 @@
+.data
+	stringNhap: .asciiz "Nhap vao mot ki tu: "
+	stringXuat: .asciiz "Ki tu vua nhap: "
+	stringLa: .asciiz " la "
+	stringSo: .asciiz " so"
+	stringChuThuong: .asciiz " chu thuong"
+	stringChuHoa: .asciiz " chu hoa"
+
+.text
+	la $a0,stringNhap
+	jal printf
+	li $v0,12
+	syscall
+	add $s0,$v0,0 #s0 la ki tu vua nhap
+	li $s1,'0'
+	li $s2,'9'
+	li $s3,'a'
+	li $s4,'z'
+	li $s5,'A'
+	li $s6,'Z'
+	la $a0,stringXuat
+	jal printf
+	sle $t0,$s0,$s2 #s0 <= s2 thì t0 = 1, ngược lại là 0
+	bne $t0,$0,skipSo
+	sle $t0,$s0,$s6 #s0 <= s6 thi t0 = 1, nguoc lai la 0
+	bne $t0,$0,skipHoa
+	sle $t0,$s0,$s4 #s0 <= s4 thi t0 = 1, nguoc lai 0
+	bne $t0,$0,skipThuong
+	j exit
+	skipSo:
+		sge $t0,$s0,$s1 #s0 >= s1 thì t0 = 1, ngược lại là 0
+		bne $t0,$0,so
+		j exit
+	skipHoa:
+		sge $t0,$s0,$s5 #s0 >= s5 thi t0=1, nguoc lai la 0
+		bne $t0,$0,chuHoa
+		j exit
+	skipThuong:
+		sge $t0,$s0,$s3 #s0 >= s3 thi t0=1, nguoc lai la 0
+		bne $t0,$0,chuThuong
+		j exit
+	so:
+		la $a0,($s0)
+		jal printCharacter
+		la $a0,stringLa
+		jal printf
+		la $a0,stringSo
+		jal printf
+		j exit
+	chuThuong:
+		la $a0,($s0)
+		jal printCharacter
+		la $a0,stringLa
+		jal printf
+		la $a0,stringChuThuong
+		jal printf
+		j exit
+	chuHoa:
+		la $a0,($s0)
+		jal printCharacter
+		la $a0,stringLa
+		jal printf
+		la $a0,stringChuHoa
+		jal printf
+		j exit
+	exit:
+		li $v0,10
+		syscall
+	printf:
+		li $v0,4
+		syscall
+		jr $ra
+	printCharacter:
+		li $v0,11
+		syscall
+		jr $ra
+	printInteger:
+		li $v0,1
+		syscall
+		jr $ra

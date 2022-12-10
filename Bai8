@@ -1,0 +1,44 @@
+.data
+	stringNhap: .asciiz "Nhap mot so: "
+	stringXuat: .asciiz "Tong tu 1 den "
+	stringLa: .asciiz " la: "
+
+.text
+	la $a0,stringNhap
+	jal printf
+	li $v0,5
+	syscall
+	addi $s0,$v0,0
+	la $a0,stringXuat
+	jal printf
+	addi $a0,$s0,0
+	jal printInteger
+	li $s1,0 #bien tong = 0
+	li $s2,1
+	li $s3,1 #bien i = 1
+	sge $t0,$s0,$s2 #t0 = 1 if s0 >= s2 else t0 = 0
+	bne $t0,$0,loop #if t0 = 1 jump to loop
+	j exit
+	loop:
+		bgt $s3,$s0,stopLoop #stop loop khi s3 > s0
+		add $s1,$s1,$s3 #s1 = s1 + s3
+		addi $s3,$s3,1  #i = i+1
+		j loop
+	stopLoop:
+		la $a0,stringLa
+		jal printf
+		addi $a0,$s1,0 
+		slt $t0,$a0,$0 #check a0 < 0
+		bne $t0,$0,exit #neu dung thi exit
+		jal printInteger #nguoc lai in tong ra man hinh
+	exit:
+		li $v0,10
+		syscall
+	printf:
+		li $v0,4
+		syscall
+		jr $ra
+	printInteger:
+		li $v0,1
+		syscall
+		jr $ra

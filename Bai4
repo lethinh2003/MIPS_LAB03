@@ -1,0 +1,55 @@
+.data
+	stringNhap1: .asciiz "Nhap so thu nhat: "
+	stringNhap2: .asciiz "Nhap so thu hai: "
+	stringXuat1: .asciiz "Tong: "
+	stringXuat2: .asciiz "\nHieu: "
+	stringXuat3: .asciiz "\nTich: "
+	stringXuat4: .asciiz "\nThuong: "
+	stringXuatDu: .asciiz " du "
+.text
+	la $a0,stringNhap1
+	jal printf
+	li $v0,5 #read integer
+	syscall
+	addi $s0,$v0,0 #s0 = so thu nhat vua nhap
+	la $a0,stringNhap2
+	jal printf
+	li $v0,5 #read integer
+	syscall
+	addi $s1,$v0,0 #s1 = so thu hai vua nhap
+	la $a0,stringXuat1
+	jal printf
+	add $a0,$s0,$s1 #Tong
+	jal printInteger
+	la $a0,stringXuat2
+	jal printf
+	sub $a0,$s0,$s1 #Hieu
+	jal printInteger
+	la $a0,stringXuat3
+	jal printf
+	mult $s0,$s1 #Nhan
+	mflo $t0 #Ket qua lay tu Lo
+	add $a0,$0,$t0
+	jal printInteger
+	la $a0,stringXuat4
+	jal printf
+	div $s0,$s1 #Chia
+	mflo $t0 #Ket qua lay tu Lo
+	mfhi $t1 
+	add $a0,$0,$t0
+	jal printInteger
+	la $a0,stringXuatDu
+	jal printf
+	add $a0,$0,$t1
+	jal printInteger
+	exit:
+		li $v0,10
+		syscall
+	printf:
+		li $v0,4
+		syscall
+		jr $ra
+	printInteger:
+		li $v0,1
+		syscall
+		jr $ra
